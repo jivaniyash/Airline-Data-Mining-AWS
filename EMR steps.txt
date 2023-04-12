@@ -1,0 +1,91 @@
+year = https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/HG7NV7/IP6BL3
+
+airports = https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/HG7NV7/XTPZZY
+
+carriers = https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/HG7NV7/3NOQ6Q
+
+
+hdfs dfs -mkdir -p /user/hive/warehouse
+
+hdfs dfs -chmod g+w /user/hive/warehouse
+
+wget https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/HG7NV7/IP6BL3
+
+wget https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/HG7NV7/XTPZZY
+
+wget https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/HG7NV7/3NOQ6Q
+
+
+
+
+
+hive> CREATE DATABASE yash_1999;
+hive> USE yash_1999;
+
+hive> CREATE TABLE airline_1999 (
+Year INT,
+Month INT,
+DayofMonth INT,
+DayOfWeek INT ,
+DepTime INT,
+CRSDepTime INT,
+ArrTime INT,
+CRSArrTime INT,
+UniqueCarrier STRING,
+FlightNum STRING,
+TailNum STRING,
+ActualElapsedTime INT,
+CRSElapsedTime INT,
+AirTime INT,
+ArrDelay INT,
+DepDelay INT,
+Origin STRING,
+Dest STRING,
+Distance INT,
+TaxiIn INT,
+TaxiOut INT,
+Cancelled INT,
+CancellationCode STRING,
+Diverted INT,
+CarrierDelay INT,
+WeatherDelay INT,
+NASDelay INT,
+SecurityDelay INT,
+LateAircraftDelay INT)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+
+LOAD DATA LOCAL INPATH './yash_1999.csv' OVERWRITE INTO TABLE airline_1999;
+
+hive> CREATE TABLE airport(
+iata STRING,
+airport STRING,	
+city STRING, 
+state STRING, 
+country STRING, 
+lat STRING,	
+long STRING) 
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar"     = "\""
+);
+
+LOAD DATA LOCAL INPATH './airports.csv' OVERWRITE INTO TABLE airport;
+
+hive> CREATE TABLE carrier (
+Code STRING, Description STRING) 
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+"separatorChar" = ",",
+"quoteChar"     = "\""
+) ;
+
+
+
+hive> LOAD DATA LOCAL INPATH './carriers.csv' OVERWRITE INTO TABLE carrier;
+
+
+
+
+
+
